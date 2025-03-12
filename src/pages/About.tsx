@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import TeamMember from '../components/TeamMember';
+import { Helmet } from 'react-helmet';
 
 // Sample data
 const founderMembers = [
@@ -12,9 +13,9 @@ const founderMembers = [
     bio: 'Ph.D. in Quantum Physics with over 15 years of research experience. Founded Epiphany to bridge the gap between theoretical science and practical applications.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:elizabeth@epiphanyclub.org' },
-      { type: 'linkedin', url: '#' },
-      { type: 'twitter', url: '#' }
+      { type: 'email' as const, url: 'mailto:elizabeth@epiphanyclub.org' },
+      { type: 'linkedin' as const, url: '#' },
+      { type: 'twitter' as const, url: '#' }
     ]
   },
   {
@@ -23,9 +24,9 @@ const founderMembers = [
     bio: 'Professor of Biochemistry with a passion for mentoring young scientists. Leads the research initiatives and partnerships at Epiphany.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:james@epiphanyclub.org' },
-      { type: 'linkedin', url: '#' },
-      { type: 'website', url: '#' }
+      { type: 'email' as const, url: 'mailto:james@epiphanyclub.org' },
+      { type: 'linkedin' as const, url: '#' },
+      { type: 'website' as const, url: '#' }
     ]
   },
   {
@@ -34,9 +35,9 @@ const founderMembers = [
     bio: 'Specializes in science education and communication. Passionate about making complex scientific concepts accessible to everyone.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:sarah@epiphanyclub.org' },
-      { type: 'twitter', url: '#' },
-      { type: 'website', url: '#' }
+      { type: 'email' as const, url: 'mailto:sarah@epiphanyclub.org' },
+      { type: 'twitter' as const, url: '#' },
+      { type: 'website' as const, url: '#' }
     ]
   }
 ];
@@ -48,8 +49,8 @@ const teamMembers = [
     bio: 'Expert in artificial intelligence and machine learning, leading our cutting-edge AI research division.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:michael@epiphanyclub.org' },
-      { type: 'linkedin', url: '#' }
+      { type: 'email' as const, url: 'mailto:michael@epiphanyclub.org' },
+      { type: 'linkedin' as const, url: '#' }
     ]
   },
   {
@@ -58,8 +59,8 @@ const teamMembers = [
     bio: 'Professor of Environmental Science focusing on climate change solutions and sustainable development.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:linda@epiphanyclub.org' },
-      { type: 'twitter', url: '#' }
+      { type: 'email' as const, url: 'mailto:linda@epiphanyclub.org' },
+      { type: 'twitter' as const, url: '#' }
     ]
   },
   {
@@ -68,8 +69,8 @@ const teamMembers = [
     bio: 'Leading our biotechnology initiatives with a focus on medical applications and healthcare innovations.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:david@epiphanyclub.org' },
-      { type: 'linkedin', url: '#' }
+      { type: 'email' as const, url: 'mailto:david@epiphanyclub.org' },
+      { type: 'linkedin' as const, url: '#' }
     ]
   },
   {
@@ -78,8 +79,8 @@ const teamMembers = [
     bio: 'Specializes in ethics in scientific research and technology, ensuring our work adheres to the highest ethical standards.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:emily@epiphanyclub.org' },
-      { type: 'website', url: '#' }
+      { type: 'email' as const, url: 'mailto:emily@epiphanyclub.org' },
+      { type: 'website' as const, url: '#' }
     ]
   },
   {
@@ -88,8 +89,8 @@ const teamMembers = [
     bio: 'Passionate about science communication and public engagement, leading our outreach programs.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:alex@epiphanyclub.org' },
-      { type: 'twitter', url: '#' }
+      { type: 'email' as const, url: 'mailto:alex@epiphanyclub.org' },
+      { type: 'twitter' as const, url: '#' }
     ]
   },
   {
@@ -98,8 +99,8 @@ const teamMembers = [
     bio: 'Expert in data science and analytics, helping transform complex data into meaningful insights.',
     image: '/placeholder.svg',
     socialLinks: [
-      { type: 'email', url: 'mailto:rachel@epiphanyclub.org' },
-      { type: 'linkedin', url: '#' }
+      { type: 'email' as const, url: 'mailto:rachel@epiphanyclub.org' },
+      { type: 'linkedin' as const, url: '#' }
     ]
   }
 ];
@@ -138,6 +139,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16">
+      <Helmet>
+        <title>About Us | Epiphany Scientific Club</title>
+        <meta name="description" content="Learn about the Epiphany Scientific Club, our mission, and the team behind our innovative research and community." />
+      </Helmet>
+      
       <section className="section-padding bg-gradient-to-br from-primary/20 to-secondary/20">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeIn">About Epiphany</h1>
