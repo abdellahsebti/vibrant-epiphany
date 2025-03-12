@@ -1,229 +1,148 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import BlogCard from '../components/BlogCard';
 
-// Sample data
-const allBlogPosts = [
+const MOCK_BLOGS = [
   {
-    id: '1',
-    title: 'The Future of Artificial Intelligence in Scientific Research',
-    excerpt: 'Exploring how AI is transforming the way we conduct scientific research and what this means for the future.',
+    id: "1",
+    title: "The Future of Quantum Computing in Scientific Research",
+    excerpt: "Explore how quantum computing is revolutionizing scientific research across various disciplines.",
     author: {
-      name: 'Dr. Sarah Johnson',
-      avatar: '/placeholder.svg'
+      name: "Dr. Jane Smith",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
     },
-    date: 'June 5, 2023',
-    readTime: '8 min read',
-    commentCount: 24,
-    tags: ['AI', 'Research'],
-    image: '/placeholder.svg'
+    date: "May 15, 2023",
+    readTime: "6 min",
+    commentCount: 23,
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    tags: ["Quantum Computing", "Research"]
   },
   {
-    id: '2',
-    title: 'Understanding Climate Models: A Comprehensive Guide',
-    excerpt: 'A detailed look at how climate models work and why they are essential for predicting environmental changes.',
+    id: "2",
+    title: "Advancements in CRISPR Technology: Ethical Implications",
+    excerpt: "A deep dive into recent CRISPR breakthroughs and the ethical questions they raise for society.",
     author: {
-      name: 'Prof. Michael Chen',
-      avatar: '/placeholder.svg'
+      name: "Prof. Michael Lee"
     },
-    date: 'May 22, 2023',
-    readTime: '12 min read',
-    commentCount: 18,
-    tags: ['Climate', 'Models'],
-    image: '/placeholder.svg'
+    date: "April 27, 2023",
+    readTime: "8 min",
+    commentCount: 47,
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    tags: ["Biotechnology", "Ethics", "CRISPR"]
   },
   {
-    id: '3',
-    title: 'The Ethics of Genetic Engineering',
-    excerpt: 'Examining the ethical implications of genetic engineering and CRISPR technology in modern science.',
+    id: "3",
+    title: "The Role of Artificial Intelligence in Climate Change Modeling",
+    excerpt: "How AI and machine learning are enhancing our ability to predict and mitigate climate change effects.",
     author: {
-      name: 'Dr. Emily White',
-      avatar: '/placeholder.svg'
+      name: "Sarah Johnson",
+      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
     },
-    date: 'May 15, 2023',
-    readTime: '10 min read',
-    commentCount: 32,
-    tags: ['Ethics', 'Genetics'],
-    image: '/placeholder.svg'
+    date: "June 3, 2023",
+    readTime: "5 min",
+    commentCount: 19,
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    tags: ["AI", "Climate Science", "Machine Learning"]
   },
   {
-    id: '4',
-    title: 'Dark Matter: What We Know and What We Don't',
-    excerpt: 'A comprehensive overview of our current understanding of dark matter and the mysteries that remain unsolved.',
+    id: "4",
+    title: "Neuroscience Breakthroughs: Understanding Brain Plasticity",
+    excerpt: "Recent discoveries in neuroscience that are changing our understanding of brain plasticity and adaptation.",
     author: {
-      name: 'Dr. James Wilson',
-      avatar: '/placeholder.svg'
+      name: "Dr. Robert Chen"
     },
-    date: 'April 30, 2023',
-    readTime: '9 min read',
-    commentCount: 15,
-    tags: ['Physics', 'Astronomy'],
-    image: '/placeholder.svg'
-  },
-  {
-    id: '5',
-    title: 'Advancements in Renewable Energy Storage',
-    excerpt: 'Recent breakthroughs in energy storage technology that could accelerate the transition to renewable energy sources.',
-    author: {
-      name: 'Prof. Linda Martinez',
-      avatar: '/placeholder.svg'
-    },
-    date: 'April 18, 2023',
-    readTime: '7 min read',
-    commentCount: 12,
-    tags: ['Energy', 'Technology'],
-    image: '/placeholder.svg'
-  },
-  {
-    id: '6',
-    title: 'The Role of Microbiomes in Human Health',
-    excerpt: 'Understanding how the trillions of microorganisms living in our bodies influence our health and well-being.',
-    author: {
-      name: 'Dr. David Kim',
-      avatar: '/placeholder.svg'
-    },
-    date: 'April 5, 2023',
-    readTime: '11 min read',
-    commentCount: 21,
-    tags: ['Biology', 'Health'],
-    image: '/placeholder.svg'
+    date: "March 18, 2023",
+    readTime: "7 min",
+    commentCount: 31,
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    tags: ["Neuroscience", "Brain Research"]
   }
 ];
 
-const allTags = ['All', 'AI', 'Research', 'Climate', 'Models', 'Ethics', 'Genetics', 'Physics', 'Astronomy', 'Energy', 'Technology', 'Biology', 'Health'];
-
 const Blog = () => {
-  const [selectedTag, setSelectedTag] = useState('All');
-  const [filteredPosts, setFilteredPosts] = useState(allBlogPosts);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
   
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    filterPosts();
-  }, [selectedTag, searchTerm]);
-
-  const filterPosts = () => {
-    let filtered = allBlogPosts;
-    
-    if (selectedTag !== 'All') {
-      filtered = filtered.filter(post => post.tags.includes(selectedTag));
-    }
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        post => 
-          post.title.toLowerCase().includes(term) || 
-          post.excerpt.toLowerCase().includes(term) || 
-          post.tags.some(tag => tag.toLowerCase().includes(term)) ||
-          post.author.name.toLowerCase().includes(term)
-      );
-    }
-    
-    setFilteredPosts(filtered);
-  };
+  // Get all unique tags
+  const allTags = [...new Set(MOCK_BLOGS.flatMap(blog => blog.tags))];
+  
+  // Filter blogs based on search term and selected tag
+  const filteredBlogs = MOCK_BLOGS.filter(blog => {
+    const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTag = selectedTag ? blog.tags.includes(selectedTag) : true;
+    return matchesSearch && matchesTag;
+  });
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <section className="section-padding bg-gradient-to-br from-secondary/20 to-primary/20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeIn">Epiphany Blog</h1>
-          <p className="text-dark/70 max-w-2xl mx-auto mb-8 animate-fadeIn">
-            Insights, discoveries, and perspectives from our community of scientists and researchers.
-          </p>
+    <div className="min-h-screen bg-light">
+      <Helmet>
+        <title>Blog | Epiphany Scientific Club</title>
+        <meta name="description" content="Read the latest scientific insights and discoveries from our club members." />
+      </Helmet>
+      
+      <div className="hero-gradient py-20 px-4 sm:px-6 md:px-8 lg:px-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Scientific Insights</h1>
+        <p className="text-lg md:text-xl max-w-3xl mx-auto">Explore cutting-edge research and thought-provoking ideas from our community.</p>
+      </div>
+      
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
+          <div className="w-full sm:w-auto">
+            <input
+              type="text"
+              placeholder="Search blogs..."
+              className="w-full sm:w-80 px-4 py-2 rounded-lg glass-panel"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           
-          <div className="max-w-xl mx-auto animate-fadeIn">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search articles..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-5 py-3 pr-12 rounded-lg border border-neutral focus:outline-none focus:border-primary transition-colors duration-300"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute right-4 top-1/2 transform -translate-y-1/2 text-dark/50"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <div className="w-full sm:w-auto flex flex-wrap gap-2 justify-center sm:justify-end">
+            <button 
+              className={`px-3 py-1 rounded-full text-sm ${selectedTag === "" ? "bg-dark text-light" : "bg-neutral text-dark"}`}
+              onClick={() => setSelectedTag("")}
+            >
+              All
+            </button>
+            {allTags.map(tag => (
+              <button 
+                key={tag}
+                className={`px-3 py-1 rounded-full text-sm ${selectedTag === tag ? "bg-dark text-light" : "bg-neutral text-dark"}`}
+                onClick={() => setSelectedTag(tag)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
+                {tag}
+              </button>
+            ))}
           </div>
         </div>
-      </section>
-      
-      <section className="section-padding">
-        <div className="container mx-auto">
-          <div className="mb-10 overflow-x-auto scrollbar-none">
-            <div className="flex space-x-3 min-w-max pb-2">
-              {allTags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setSelectedTag(tag)}
-                  className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                    selectedTag === tag
-                      ? 'bg-primary text-dark font-medium'
-                      : 'bg-neutral/50 text-dark/70 hover:bg-neutral'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredBlogs.map((blog, index) => (
+            <BlogCard 
+              key={blog.id}
+              id={blog.id}
+              title={blog.title}
+              excerpt={blog.excerpt}
+              author={blog.author}
+              date={blog.date}
+              readTime={blog.readTime}
+              commentCount={blog.commentCount}
+              image={blog.image}
+              tags={blog.tags}
+              index={index}
+            />
+          ))}
+        </div>
+        
+        {filteredBlogs.length === 0 && (
+          <div className="text-center py-10">
+            <h3 className="text-xl font-semibold">No blogs found</h3>
+            <p className="text-dark/60">Try adjusting your search or filters</p>
           </div>
-          
-          {filteredPosts.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, index) => (
-                <BlogCard 
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  excerpt={post.excerpt}
-                  author={post.author}
-                  date={post.date}
-                  readTime={post.readTime}
-                  commentCount={post.commentCount}
-                  image={post.image}
-                  tags={post.tags}
-                  index={index}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No articles found</h3>
-              <p className="text-dark/70">
-                We couldn't find any blog posts matching your search. Try different keywords or tags.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-      
-      <section className="section-padding bg-neutral/30">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Want to contribute?</h2>
-          <p className="text-dark/70 max-w-2xl mx-auto mb-8">
-            Share your knowledge and insights with our community. Write an article for the Epiphany blog.
-          </p>
-          <Link to="/login" className="btn-primary">
-            Start writing
-          </Link>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };
