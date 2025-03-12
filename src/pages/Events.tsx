@@ -1,217 +1,150 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import EventCard from '../components/EventCard';
 
-// Sample data
-const allEvents = [
+// Sample event data
+const MOCK_EVENTS = [
   {
-    id: '1',
-    title: 'Annual Science Symposium',
-    description: 'Join us for our annual symposium featuring keynote speakers from around the world.',
-    date: 'July 15, 2023',
-    time: '9:00 AM - 5:00 PM',
-    location: 'Main Campus Auditorium',
-    attendeeCount: 120,
+    id: "1",
+    title: "Annual Science Symposium",
+    description: "Join us for our annual symposium featuring keynote speakers from around the world discussing the latest scientific breakthroughs.",
+    date: "July 15, 2023",
+    time: "9:00 AM - 5:00 PM",
+    location: "Main Campus Auditorium",
+    attendeeCount: 145,
     maxAttendees: 200,
-    category: 'Conference',
-    image: '/placeholder.svg'
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Conference"
   },
   {
-    id: '2',
-    title: 'Workshop: Introduction to Data Science',
-    description: 'A hands-on workshop for beginners to learn the fundamentals of data science and its applications.',
-    date: 'July 22, 2023',
-    time: '2:00 PM - 6:00 PM',
-    location: 'Innovation Lab, Building B',
-    attendeeCount: 30,
+    id: "2",
+    title: "Workshop: Introduction to Data Science",
+    description: "A hands-on workshop for beginners to learn the fundamentals of data science and its applications in various fields.",
+    date: "July 22, 2023",
+    time: "2:00 PM - 6:00 PM",
+    location: "Innovation Lab, Building B",
+    attendeeCount: 32,
     maxAttendees: 40,
-    category: 'Workshop',
-    image: '/placeholder.svg'
+    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Workshop"
   },
   {
-    id: '3',
-    title: 'Guest Lecture: Sustainability in Science',
-    description: 'Renowned environmentalist Dr. Maya Patel discusses the importance of sustainability in scientific research.',
-    date: 'August 5, 2023',
-    time: '4:00 PM - 6:00 PM',
-    location: 'Virtual Event',
-    attendeeCount: 85,
-    maxAttendees: 300,
-    category: 'Lecture',
-    image: '/placeholder.svg'
+    id: "3",
+    title: "Guest Lecture: The Future of Quantum Computing",
+    description: "Distinguished Professor Robert Miller discusses the current state and future potential of quantum computing.",
+    date: "August 5, 2023",
+    time: "3:00 PM - 5:00 PM",
+    location: "Lecture Hall C",
+    attendeeCount: 78,
+    maxAttendees: 120,
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Lecture"
   },
   {
-    id: '4',
-    title: 'Networking Mixer: Connect with Industry Professionals',
-    description: 'An opportunity to meet and network with professionals from various scientific industries.',
-    date: 'August 12, 2023',
-    time: '6:30 PM - 9:00 PM',
-    location: 'Science Center Lobby',
-    attendeeCount: 50,
+    id: "4",
+    title: "Networking Mixer for Young Scientists",
+    description: "Connect with peers and established professionals in your field at this casual networking event.",
+    date: "August 12, 2023",
+    time: "6:00 PM - 9:00 PM",
+    location: "Science Center Atrium",
+    attendeeCount: 45,
     maxAttendees: 100,
-    category: 'Networking',
-    image: '/placeholder.svg'
+    image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Networking"
   },
   {
-    id: '5',
-    title: 'Field Trip: Observatory Visit',
-    description: 'Join us for a guided tour of the city observatory and a night of stargazing.',
-    date: 'August 18, 2023',
-    time: '8:00 PM - 11:00 PM',
-    location: 'City Observatory',
-    attendeeCount: 25,
+    id: "5",
+    title: "Field Trip: Observatory Night",
+    description: "Join us for a night of stargazing at the university observatory with expert astronomers guiding the session.",
+    date: "August 19, 2023",
+    time: "8:00 PM - 11:00 PM",
+    location: "University Observatory",
+    attendeeCount: 28,
     maxAttendees: 30,
-    category: 'Field Trip',
-    image: '/placeholder.svg'
-  },
-  {
-    id: '6',
-    title: 'Hackathon: Science Solutions',
-    description: 'A 48-hour hackathon to develop innovative solutions to real-world scientific problems.',
-    date: 'September 2-4, 2023',
-    time: 'All Day',
-    location: 'Innovation Hub',
-    attendeeCount: 60,
-    maxAttendees: 80,
-    category: 'Hackathon',
-    image: '/placeholder.svg'
+    image: "https://images.unsplash.com/photo-1465101162946-4377e57745c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Field Trip"
   }
 ];
 
-const categories = ['All', 'Conference', 'Workshop', 'Lecture', 'Networking', 'Field Trip', 'Hackathon'];
+// Category filter options
+const categories = ["All", ...Array.from(new Set(MOCK_EVENTS.map(event => event.category)))];
 
 const Events = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [filteredEvents, setFilteredEvents] = useState(allEvents);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    filterEvents();
-  }, [selectedCategory, searchTerm]);
-
-  const filterEvents = () => {
-    let filtered = allEvents;
-    
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(event => event.category === selectedCategory);
-    }
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        event => 
-          event.title.toLowerCase().includes(term) || 
-          event.description.toLowerCase().includes(term) || 
-          event.location.toLowerCase().includes(term) ||
-          event.category.toLowerCase().includes(term)
-      );
-    }
-    
-    setFilteredEvents(filtered);
-  };
+  // Filter events based on search term and category
+  const filteredEvents = MOCK_EVENTS.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         event.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || event.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <section className="section-padding bg-gradient-to-br from-primary/20 to-secondary/20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeIn">Upcoming Events</h1>
-          <p className="text-dark/70 max-w-2xl mx-auto mb-8 animate-fadeIn">
-            Discover and participate in our upcoming events, workshops, lectures, and more.
-          </p>
+    <div className="min-h-screen bg-light">
+      <Helmet>
+        <title>Events | Epiphany Scientific Club</title>
+        <meta name="description" content="Upcoming events, workshops, and lectures hosted by Epiphany Scientific Club." />
+      </Helmet>
+      
+      <div className="hero-gradient py-20 px-4 sm:px-6 md:px-8 lg:px-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Upcoming Events</h1>
+        <p className="text-lg md:text-xl max-w-3xl mx-auto">Join us for exciting events, workshops, and lectures. Expand your knowledge and connect with fellow science enthusiasts.</p>
+      </div>
+      
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+          <div className="w-full md:w-auto">
+            <input
+              type="text"
+              placeholder="Search events..."
+              className="w-full md:w-80 px-4 py-2 rounded-lg glass-panel"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           
-          <div className="max-w-xl mx-auto animate-fadeIn">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search events..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-5 py-3 pr-12 rounded-lg border border-neutral focus:outline-none focus:border-primary transition-colors duration-300"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute right-4 top-1/2 transform -translate-y-1/2 text-dark/50"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <div className="w-full md:w-auto flex flex-wrap gap-2 justify-center md:justify-end">
+            {categories.map(category => (
+              <button 
+                key={category}
+                className={`px-3 py-1 rounded-full text-sm ${selectedCategory === category ? "bg-dark text-light" : "bg-neutral text-dark"}`}
+                onClick={() => setSelectedCategory(category)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
+                {category}
+              </button>
+            ))}
           </div>
         </div>
-      </section>
-      
-      <section className="section-padding">
-        <div className="container mx-auto">
-          <div className="mb-10 overflow-x-auto scrollbar-none">
-            <div className="flex space-x-3 min-w-max pb-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                    selectedCategory === category
-                      ? 'bg-primary text-dark font-medium'
-                      : 'bg-neutral/50 text-dark/70 hover:bg-neutral'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {filteredEvents.map((event, index) => (
+            <EventCard 
+              key={event.id}
+              id={event.id}
+              title={event.title}
+              description={event.description}
+              date={event.date}
+              time={event.time}
+              location={event.location}
+              attendeeCount={event.attendeeCount}
+              maxAttendees={event.maxAttendees}
+              image={event.image}
+              category={event.category}
+              index={index}
+            />
+          ))}
+        </div>
+        
+        {filteredEvents.length === 0 && (
+          <div className="text-center py-10">
+            <h3 className="text-xl font-semibold">No events found</h3>
+            <p className="text-dark/60">Try adjusting your search or filters</p>
           </div>
-          
-          {filteredEvents.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredEvents.map((event, index) => (
-                <EventCard 
-                  key={event.id}
-                  id={event.id}
-                  title={event.title}
-                  description={event.description}
-                  date={event.date}
-                  time={event.time}
-                  location={event.location}
-                  attendeeCount={event.attendeeCount}
-                  maxAttendees={event.maxAttendees}
-                  image={event.image}
-                  category={event.category}
-                  index={index}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No events found</h3>
-              <p className="text-dark/70">
-                We couldn't find any events matching your search. Try different keywords or categories.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-      
-      <section className="section-padding bg-dark text-light">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Want to host an event?</h2>
-          <p className="text-light/70 max-w-2xl mx-auto mb-8">
-            If you're a member and want to organize an event for the Epiphany community, we'd love to hear from you.
-          </p>
-          <button className="btn-primary">
-            Submit event proposal
-          </button>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };

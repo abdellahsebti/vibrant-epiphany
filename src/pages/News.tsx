@@ -1,200 +1,134 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import NewsCard from '../components/NewsCard';
 
-// Sample data
-const allNewsItems = [
+// Sample news data
+const MOCK_NEWS = [
   {
-    id: '1',
-    title: 'New Research Breakthrough in Quantum Computing',
-    excerpt: 'Our team has achieved a significant breakthrough in quantum computing that could revolutionize the field.',
-    date: 'June 10, 2023',
-    category: 'Research',
-    image: '/placeholder.svg'
+    id: "1",
+    title: "New Research Breakthrough in Quantum Computing",
+    excerpt: "Our team has achieved a significant breakthrough in quantum computing that could revolutionize the field and lead to faster computation for complex problems.",
+    date: "June 10, 2023",
+    category: "Research",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
-    id: '2',
-    title: 'Epiphany Club Receives Major Grant',
-    excerpt: 'We are pleased to announce that our club has been awarded a substantial grant to support our ongoing research initiatives.',
-    date: 'May 28, 2023',
-    category: 'Announcement',
-    image: '/placeholder.svg'
+    id: "2",
+    title: "Epiphany Club Receives Major Grant",
+    excerpt: "We are pleased to announce that our club has been awarded a substantial grant to support our ongoing research initiatives in climate science.",
+    date: "May 28, 2023",
+    category: "Announcement",
+    image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
-    id: '3',
-    title: 'New Partnerships with Leading Research Institutions',
-    excerpt: 'Epiphany Club is forming strategic partnerships with several prestigious research institutions to collaborate on cutting-edge projects.',
-    date: 'May 15, 2023',
-    category: 'Partnership',
-    image: '/placeholder.svg'
+    id: "3",
+    title: "New Partnerships with Leading Research Institutions",
+    excerpt: "Epiphany Club is forming strategic partnerships with several prestigious research institutions to collaborate on cutting-edge projects in multiple scientific domains.",
+    date: "May 15, 2023",
+    category: "Partnership",
+    image: "https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
-    id: '4',
-    title: 'Epiphany Members Present at International Conference',
-    excerpt: 'Several members of our club presented their research findings at the International Science Conference in London last week.',
-    date: 'April 30, 2023',
-    category: 'Conference',
-    image: '/placeholder.svg'
+    id: "4",
+    title: "Members Publish Groundbreaking Paper in Nature",
+    excerpt: "A team of our members has published a groundbreaking paper in Nature journal, detailing their discoveries in environmental science and sustainable technology.",
+    date: "May 3, 2023",
+    category: "Publication",
+    image: "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
-    id: '5',
-    title: 'New Laboratory Equipment Acquisition',
-    excerpt: 'The club has acquired new state-of-the-art laboratory equipment that will enhance our research capabilities.',
-    date: 'April 15, 2023',
-    category: 'Infrastructure',
-    image: '/placeholder.svg'
+    id: "5",
+    title: "Annual Science Fair Winners Announced",
+    excerpt: "The results of our annual science fair are in! Congratulations to all participants and especially to our winners who demonstrated exceptional creativity and scientific rigor.",
+    date: "April 20, 2023",
+    category: "Event",
+    image: "https://images.unsplash.com/photo-1581094794329-c8112c4e25b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   },
   {
-    id: '6',
-    title: 'Upcoming Webinar Series on Climate Science',
-    excerpt: 'We are excited to announce a new webinar series focusing on the latest developments in climate science.',
-    date: 'April 8, 2023',
-    category: 'Education',
-    image: '/placeholder.svg'
-  },
-  {
-    id: '7',
-    title: 'Member Spotlight: Dr. Jennifer Lee',
-    excerpt: 'This month, we highlight the remarkable achievements of Dr. Jennifer Lee in the field of microbiology.',
-    date: 'March 22, 2023',
-    category: 'Member Spotlight',
-    image: '/placeholder.svg'
-  },
-  {
-    id: '8',
-    title: 'Annual Science Fair Winners Announced',
-    excerpt: 'The results of our annual science fair are in! Congratulations to all participants and especially to our winners.',
-    date: 'March 10, 2023',
-    category: 'Event',
-    image: '/placeholder.svg'
-  },
-  {
-    id: '9',
-    title: 'New Science Outreach Program for Schools',
-    excerpt: 'Epiphany is launching a new outreach program to bring science education to underprivileged schools in the area.',
-    date: 'February 25, 2023',
-    category: 'Community',
-    image: '/placeholder.svg'
+    id: "6",
+    title: "New Laboratory Equipment Acquisition",
+    excerpt: "Epiphany Club has acquired state-of-the-art laboratory equipment that will enhance our research capabilities and enable new types of experiments.",
+    date: "April 8, 2023",
+    category: "Facility",
+    image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
   }
 ];
 
-const categories = ['All', 'Research', 'Announcement', 'Partnership', 'Conference', 'Infrastructure', 'Education', 'Member Spotlight', 'Event', 'Community'];
+// Category filter options
+const categories = ["All", ...Array.from(new Set(MOCK_NEWS.map(news => news.category)))];
 
 const News = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [filteredNews, setFilteredNews] = useState(allNewsItems);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    filterNews();
-  }, [selectedCategory, searchTerm]);
-
-  const filterNews = () => {
-    let filtered = allNewsItems;
-    
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(item => item.category === selectedCategory);
-    }
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        item => 
-          item.title.toLowerCase().includes(term) || 
-          item.excerpt.toLowerCase().includes(term) || 
-          item.category.toLowerCase().includes(term)
-      );
-    }
-    
-    setFilteredNews(filtered);
-  };
+  // Filter news based on search term and category
+  const filteredNews = MOCK_NEWS.filter(news => {
+    const matchesSearch = news.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         news.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || news.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <section className="section-padding bg-gradient-to-br from-primary/20 to-secondary/20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeIn">Latest News</h1>
-          <p className="text-dark/70 max-w-2xl mx-auto mb-8 animate-fadeIn">
-            Stay updated with the latest events, announcements, and happenings at Epiphany Scientific Club.
-          </p>
-          
-          <div className="max-w-xl mx-auto animate-fadeIn">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search news..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-5 py-3 pr-12 rounded-lg border border-neutral focus:outline-none focus:border-primary transition-colors duration-300"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute right-4 top-1/2 transform -translate-y-1/2 text-dark/50"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-light">
+      <Helmet>
+        <title>News | Epiphany Scientific Club</title>
+        <meta name="description" content="Latest news and announcements from Epiphany Scientific Club." />
+      </Helmet>
       
-      <section className="section-padding">
-        <div className="container mx-auto">
-          <div className="mb-10 overflow-x-auto scrollbar-none">
-            <div className="flex space-x-3 min-w-max pb-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                    selectedCategory === category
-                      ? 'bg-primary text-dark font-medium'
-                      : 'bg-neutral/50 text-dark/70 hover:bg-neutral'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+      <div className="hero-gradient py-20 px-4 sm:px-6 md:px-8 lg:px-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Latest News</h1>
+        <p className="text-lg md:text-xl max-w-3xl mx-auto">Stay updated with the latest announcements, achievements, and developments from our scientific community.</p>
+      </div>
+      
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+          <div className="w-full md:w-auto">
+            <input
+              type="text"
+              placeholder="Search news..."
+              className="w-full md:w-80 px-4 py-2 rounded-lg glass-panel"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           
-          {filteredNews.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredNews.map((item, index) => (
-                <NewsCard 
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  excerpt={item.excerpt}
-                  date={item.date}
-                  image={item.image}
-                  category={item.category}
-                  index={index}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No results found</h3>
-              <p className="text-dark/70">
-                We couldn't find any news matching your search. Try different keywords or categories.
-              </p>
-            </div>
-          )}
+          <div className="w-full md:w-auto flex flex-wrap gap-2 justify-center md:justify-end">
+            {categories.map(category => (
+              <button 
+                key={category}
+                className={`px-3 py-1 rounded-full text-sm ${selectedCategory === category ? "bg-dark text-light" : "bg-neutral text-dark"}`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
-      </section>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredNews.map((news, index) => (
+            <NewsCard 
+              key={news.id}
+              id={news.id}
+              title={news.title}
+              excerpt={news.excerpt}
+              date={news.date}
+              image={news.image}
+              category={news.category}
+              index={index}
+            />
+          ))}
+        </div>
+        
+        {filteredNews.length === 0 && (
+          <div className="text-center py-10">
+            <h3 className="text-xl font-semibold">No news found</h3>
+            <p className="text-dark/60">Try adjusting your search or filters</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
