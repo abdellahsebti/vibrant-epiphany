@@ -19,6 +19,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+        futura: ['Futura PT', 'Futura', 'sans-serif'],
+      },
       colors: {
         primary: "#F9BE08",
         secondary: "#EFD30B",
