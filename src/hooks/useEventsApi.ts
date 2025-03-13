@@ -6,6 +6,8 @@ export const useEventsList = () => {
   return useQuery({
     queryKey: ['events'],
     queryFn: getEvents,
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -14,6 +16,8 @@ export const useEventDetail = (id: string) => {
     queryKey: ['event', id],
     queryFn: () => getEventById(id),
     enabled: !!id,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 

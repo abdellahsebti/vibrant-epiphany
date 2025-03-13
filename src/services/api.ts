@@ -1,6 +1,8 @@
 
 // This file simulates Next.js server-side functions
 // In a real Next.js app, these would be API routes or server components
+import { ObjectId } from 'mongodb';
+import { connectToDatabase } from './db';
 
 // Types for our data models
 export interface Blog {
@@ -33,137 +35,401 @@ export interface Event {
   imageUrl?: string;
 }
 
-// Mock data - Replace with MongoDB connection
-// MONGODB INTEGRATION POINT: Replace these arrays with MongoDB collections
-let blogs: Blog[] = [
-  { id: '1', title: 'The Future of Scientific Research', content: 'Lorem ipsum...', publishedDate: '2023-05-12', status: 'Published' },
-  { id: '2', title: 'Quantum Computing Breakthroughs', content: 'Lorem ipsum...', publishedDate: '2023-06-28', status: 'Published' },
-  { id: '3', title: 'Sustainable Energy Solutions', content: 'Lorem ipsum...', publishedDate: '2023-07-15', status: 'Draft' },
-];
-
-let news: News[] = [
-  { id: '1', title: 'Epiphany Club Awarded Grant for New Research Initiative', content: 'Lorem ipsum...', publishedDate: '2023-04-05', category: 'Research' },
-  { id: '2', title: 'New Lab Equipment Expands Experimental Capabilities', content: 'Lorem ipsum...', publishedDate: '2023-03-20', category: 'Facilities' },
-  { id: '3', title: 'Student Researchers Present Findings at National Conference', content: 'Lorem ipsum...', publishedDate: '2023-02-15', category: 'Events' },
-];
-
-let events: Event[] = [
-  { id: '1', title: 'Annual Science Fair', description: 'Lorem ipsum...', date: '2023-09-15', location: 'Main Campus', status: 'Upcoming' },
-  { id: '2', title: 'Quantum Computing Workshop', description: 'Lorem ipsum...', date: '2023-08-22', location: 'Online', status: 'Upcoming' },
-  { id: '3', title: 'Research Symposium', description: 'Lorem ipsum...', date: '2023-06-10', location: 'Conference Center', status: 'Past' },
-];
-
-// MONGODB INTEGRATION POINT: Replace these functions with MongoDB queries
-
 // Blog API
 export const getBlogs = async (): Promise<Blog[]> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  // Example: return await blogsCollection.find().toArray();
-  return blogs;
+  try {
+    const db = await connectToDatabase();
+    const blogsCollection = db.collection('blogs');
+    const blogs = await blogsCollection.find({}).toArray();
+    
+    // Convert MongoDB _id to id
+    return blogs.map(blog => ({
+      id: blog._id.toString(),
+      title: blog.title,
+      content: blog.content,
+      publishedDate: blog.publishedDate,
+      status: blog.status,
+      author: blog.author,
+      imageUrl: blog.imageUrl
+    }));
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    throw error;
+  }
 };
 
 export const getBlogById = async (id: string): Promise<Blog | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  // Example: return await blogsCollection.findOne({ id });
-  return blogs.find(blog => blog.id === id);
+  try {
+    const db = await connectToDatabase();
+    const blogsCollection = db.collection('blogs');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    const blog = await blogsCollection.findOne({ _id: objectId });
+    
+    if (!blog) return undefined;
+    
+    return {
+      id: blog._id.toString(),
+      title: blog.title,
+      content: blog.content,
+      publishedDate: blog.publishedDate,
+      status: blog.status,
+      author: blog.author,
+      imageUrl: blog.imageUrl
+    };
+  } catch (error) {
+    console.error("Error fetching blog by id:", error);
+    throw error;
+  }
 };
 
 export const createBlog = async (blog: Omit<Blog, 'id'>): Promise<Blog> => {
-  // MONGODB INTEGRATION: Replace with MongoDB insert
-  // Example: const result = await blogsCollection.insertOne({ ...blog, id: new ObjectId().toString() });
-  // return await blogsCollection.findOne({ _id: result.insertedId });
-  const newBlog = { ...blog, id: (blogs.length + 1).toString() };
-  blogs.push(newBlog as Blog);
-  return newBlog as Blog;
+  try {
+    const db = await connectToDatabase();
+    const blogsCollection = db.collection('blogs');
+    
+    const result = await blogsCollection.insertOne(blog);
+    
+    return {
+      id: result.insertedId.toString(),
+      ...blog
+    };
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    throw error;
+  }
 };
 
 export const updateBlog = async (id: string, blog: Partial<Blog>): Promise<Blog | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB update
-  // Example: await blogsCollection.updateOne({ id }, { $set: blog });
-  // return await blogsCollection.findOne({ id });
-  const index = blogs.findIndex(b => b.id === id);
-  if (index !== -1) {
-    blogs[index] = { ...blogs[index], ...blog };
-    return blogs[index];
+  try {
+    const db = await connectToDatabase();
+    const blogsCollection = db.collection('blogs');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    // Remove id from update object if present
+    const { id: _, ...updateData } = blog;
+    
+    await blogsCollection.updateOne(
+      { _id: objectId },
+      { $set: updateData }
+    );
+    
+    const updatedBlog = await blogsCollection.findOne({ _id: objectId });
+    
+    if (!updatedBlog) return undefined;
+    
+    return {
+      id: updatedBlog._id.toString(),
+      title: updatedBlog.title,
+      content: updatedBlog.content,
+      publishedDate: updatedBlog.publishedDate,
+      status: updatedBlog.status,
+      author: updatedBlog.author,
+      imageUrl: updatedBlog.imageUrl
+    };
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    throw error;
   }
-  return undefined;
 };
 
 export const deleteBlog = async (id: string): Promise<boolean> => {
-  // MONGODB INTEGRATION: Replace with MongoDB delete
-  // Example: const result = await blogsCollection.deleteOne({ id });
-  // return result.deletedCount > 0;
-  const initialLength = blogs.length;
-  blogs = blogs.filter(blog => blog.id !== id);
-  return initialLength > blogs.length;
+  try {
+    const db = await connectToDatabase();
+    const blogsCollection = db.collection('blogs');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return false;
+    }
+    
+    const result = await blogsCollection.deleteOne({ _id: objectId });
+    return result.deletedCount > 0;
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    throw error;
+  }
 };
 
-// News API - Similar structure to blogs
+// News API
 export const getNews = async (): Promise<News[]> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  return news;
+  try {
+    const db = await connectToDatabase();
+    const newsCollection = db.collection('news');
+    const newsItems = await newsCollection.find({}).toArray();
+    
+    // Convert MongoDB _id to id
+    return newsItems.map(news => ({
+      id: news._id.toString(),
+      title: news.title,
+      content: news.content,
+      publishedDate: news.publishedDate,
+      category: news.category,
+      imageUrl: news.imageUrl
+    }));
+  } catch (error) {
+    console.error("Error fetching news:", error);
+    throw error;
+  }
 };
 
 export const getNewsById = async (id: string): Promise<News | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  return news.find(item => item.id === id);
+  try {
+    const db = await connectToDatabase();
+    const newsCollection = db.collection('news');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    const news = await newsCollection.findOne({ _id: objectId });
+    
+    if (!news) return undefined;
+    
+    return {
+      id: news._id.toString(),
+      title: news.title,
+      content: news.content,
+      publishedDate: news.publishedDate,
+      category: news.category,
+      imageUrl: news.imageUrl
+    };
+  } catch (error) {
+    console.error("Error fetching news by id:", error);
+    throw error;
+  }
 };
 
 export const createNews = async (newsItem: Omit<News, 'id'>): Promise<News> => {
-  // MONGODB INTEGRATION: Replace with MongoDB insert
-  const newNews = { ...newsItem, id: (news.length + 1).toString() };
-  news.push(newNews as News);
-  return newNews as News;
+  try {
+    const db = await connectToDatabase();
+    const newsCollection = db.collection('news');
+    
+    const result = await newsCollection.insertOne(newsItem);
+    
+    return {
+      id: result.insertedId.toString(),
+      ...newsItem
+    };
+  } catch (error) {
+    console.error("Error creating news:", error);
+    throw error;
+  }
 };
 
 export const updateNews = async (id: string, newsItem: Partial<News>): Promise<News | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB update
-  const index = news.findIndex(n => n.id === id);
-  if (index !== -1) {
-    news[index] = { ...news[index], ...newsItem };
-    return news[index];
+  try {
+    const db = await connectToDatabase();
+    const newsCollection = db.collection('news');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    // Remove id from update object if present
+    const { id: _, ...updateData } = newsItem;
+    
+    await newsCollection.updateOne(
+      { _id: objectId },
+      { $set: updateData }
+    );
+    
+    const updatedNews = await newsCollection.findOne({ _id: objectId });
+    
+    if (!updatedNews) return undefined;
+    
+    return {
+      id: updatedNews._id.toString(),
+      title: updatedNews.title,
+      content: updatedNews.content,
+      publishedDate: updatedNews.publishedDate,
+      category: updatedNews.category,
+      imageUrl: updatedNews.imageUrl
+    };
+  } catch (error) {
+    console.error("Error updating news:", error);
+    throw error;
   }
-  return undefined;
 };
 
 export const deleteNews = async (id: string): Promise<boolean> => {
-  // MONGODB INTEGRATION: Replace with MongoDB delete
-  const initialLength = news.length;
-  news = news.filter(n => n.id !== id);
-  return initialLength > news.length;
+  try {
+    const db = await connectToDatabase();
+    const newsCollection = db.collection('news');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return false;
+    }
+    
+    const result = await newsCollection.deleteOne({ _id: objectId });
+    return result.deletedCount > 0;
+  } catch (error) {
+    console.error("Error deleting news:", error);
+    throw error;
+  }
 };
 
-// Events API - Similar structure to blogs and news
+// Events API
 export const getEvents = async (): Promise<Event[]> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  return events;
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection('events');
+    const events = await eventsCollection.find({}).toArray();
+    
+    // Convert MongoDB _id to id
+    return events.map(event => ({
+      id: event._id.toString(),
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      location: event.location,
+      status: event.status,
+      registrationUrl: event.registrationUrl,
+      imageUrl: event.imageUrl
+    }));
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw error;
+  }
 };
 
 export const getEventById = async (id: string): Promise<Event | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB query
-  return events.find(event => event.id === id);
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection('events');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    const event = await eventsCollection.findOne({ _id: objectId });
+    
+    if (!event) return undefined;
+    
+    return {
+      id: event._id.toString(),
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      location: event.location,
+      status: event.status,
+      registrationUrl: event.registrationUrl,
+      imageUrl: event.imageUrl
+    };
+  } catch (error) {
+    console.error("Error fetching event by id:", error);
+    throw error;
+  }
 };
 
 export const createEvent = async (event: Omit<Event, 'id'>): Promise<Event> => {
-  // MONGODB INTEGRATION: Replace with MongoDB insert
-  const newEvent = { ...event, id: (events.length + 1).toString() };
-  events.push(newEvent as Event);
-  return newEvent as Event;
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection('events');
+    
+    const result = await eventsCollection.insertOne(event);
+    
+    return {
+      id: result.insertedId.toString(),
+      ...event
+    };
+  } catch (error) {
+    console.error("Error creating event:", error);
+    throw error;
+  }
 };
 
 export const updateEvent = async (id: string, event: Partial<Event>): Promise<Event | undefined> => {
-  // MONGODB INTEGRATION: Replace with MongoDB update
-  const index = events.findIndex(e => e.id === id);
-  if (index !== -1) {
-    events[index] = { ...events[index], ...event };
-    return events[index];
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection('events');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return undefined;
+    }
+    
+    // Remove id from update object if present
+    const { id: _, ...updateData } = event;
+    
+    await eventsCollection.updateOne(
+      { _id: objectId },
+      { $set: updateData }
+    );
+    
+    const updatedEvent = await eventsCollection.findOne({ _id: objectId });
+    
+    if (!updatedEvent) return undefined;
+    
+    return {
+      id: updatedEvent._id.toString(),
+      title: updatedEvent.title,
+      description: updatedEvent.description,
+      date: updatedEvent.date,
+      location: updatedEvent.location,
+      status: updatedEvent.status,
+      registrationUrl: updatedEvent.registrationUrl,
+      imageUrl: updatedEvent.imageUrl
+    };
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
   }
-  return undefined;
 };
 
 export const deleteEvent = async (id: string): Promise<boolean> => {
-  // MONGODB INTEGRATION: Replace with MongoDB delete
-  const initialLength = events.length;
-  events = events.filter(event => event.id !== id);
-  return initialLength > events.length;
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection('events');
+    
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (error) {
+      console.error("Invalid ObjectId format:", error);
+      return false;
+    }
+    
+    const result = await eventsCollection.deleteOne({ _id: objectId });
+    return result.deletedCount > 0;
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error;
+  }
 };
