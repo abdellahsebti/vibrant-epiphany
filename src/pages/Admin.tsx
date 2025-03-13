@@ -13,11 +13,30 @@ import AdminBlogTab from '@/components/admin/AdminBlogTab';
 import AdminNewsTab from '@/components/admin/AdminNewsTab';
 import AdminEventsTab from '@/components/admin/AdminEventsTab';
 
+// MONGODB INTEGRATION POINT: 
+// Create an authentication hook that checks if the user is authenticated
+// using your MongoDB user collection
+const useAuth = () => {
+  // This is a placeholder. In a real app, you would:
+  // 1. Check if the user is logged in
+  // 2. Verify if the user has admin privileges
+  // 3. Return appropriate authentication state
+  
+  // Placeholder:
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // useEffect(() => {
+  //   // Check if user is logged in with MongoDB
+  //   // Example: const user = await userCollection.findOne({ token: localStorage.getItem('token') });
+  //   // setIsAuthenticated(!!user && user.isAdmin);
+  // }, []);
+  
+  return { isAuthenticated: true }; // Hardcoded for demonstration
+};
+
 const Admin = () => {
   const navigate = useNavigate();
-  // In a real application, you would check authentication status here
-  // For example: const {isAuthenticated} = useAuth();
-  const isAuthenticated = true; // Placeholder for actual auth check
+  // MONGODB INTEGRATION POINT: Use your authentication hook here
+  const { isAuthenticated } = useAuth();
   
   if (!isAuthenticated) {
     // In actual implementation, redirect to login

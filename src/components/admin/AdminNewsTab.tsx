@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,16 +11,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-
-// Mock data - replace with actual API calls later
-const mockNews = [
-  { id: '1', title: 'Epiphany Club Awarded Grant for New Research Initiative', publishedDate: '2023-04-05', category: 'Research' },
-  { id: '2', title: 'New Lab Equipment Expands Experimental Capabilities', publishedDate: '2023-03-20', category: 'Facilities' },
-  { id: '3', title: 'Student Researchers Present Findings at National Conference', publishedDate: '2023-02-15', category: 'Events' },
-];
+import { useNewsList, useDeleteNews } from '@/hooks/useNewsApi';
 
 const AdminNewsTab = () => {
-  const [news, setNews] = useState(mockNews);
+  const { data: news, isLoading, isError } = useNewsList();
+  const deleteNewsMutation = useDeleteNews();
   const { toast } = useToast();
 
   const handleEdit = (id: string) => {
@@ -32,13 +27,31 @@ const AdminNewsTab = () => {
   };
 
   const handleDelete = (id: string) => {
-    // Placeholder for delete functionality
-    setNews(news.filter(item => item.id !== id));
-    toast({
-      title: "News article deleted",
-      description: "The news article has been successfully deleted.",
+    deleteNewsMutation.mutate(id, {
+      onSuccess: () => {
+        toast({
+          title: "News article deleted",
+          description: "The news article has been successfully deleted.",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: "Failed to delete the news article. Please try again.",
+          variant: "destructive",
+        });
+        console.error("Delete error:", error);
+      }
     });
   };
+
+  if (isLoading) {
+    return <div>Loading news articles...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading news articles. Please try again.</div>;
+  }
 
   return (
     <div>
@@ -50,37 +63,48 @@ const AdminNewsTab = () => {
         </Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Published Date</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {news.map((article) => (
-            <TableRow key={article.id}>
-              <TableCell className="font-medium">{article.title}</TableCell>
-              <TableCell>{article.publishedDate}</TableCell>
-              <TableCell>
-                <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                  {article.category}
-                </span>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="sm" onClick={() => handleEdit(article.id)}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDelete(article.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </TableCell>
+      {news && news.length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Published Date</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {news.map((article) => (
+              <TableRow key={article.id}>
+                <TableCell className="font-medium">{article.title}</TableCell>
+                <TableCell>{article.publishedDate}</TableCell>
+                <TableCell>
+                  <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                    {article.category}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="sm" onClick={() => handleEdit(article.id)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleDelete(article.id)}
+                    disabled={deleteNewsMutation.isPending}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No news articles found. Create your first news article!</p>
+        </div>
+      )}
     </div>
   );
 };

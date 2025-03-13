@@ -11,16 +11,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-
-// Mock data - replace with actual API calls later
-const mockBlogs = [
-  { id: '1', title: 'The Future of Scientific Research', publishedDate: '2023-05-12', status: 'Published' },
-  { id: '2', title: 'Quantum Computing Breakthroughs', publishedDate: '2023-06-28', status: 'Published' },
-  { id: '3', title: 'Sustainable Energy Solutions', publishedDate: '2023-07-15', status: 'Draft' },
-];
+import { useBlogList, useDeleteBlog } from '@/hooks/useBlogApi';
 
 const AdminBlogTab = () => {
-  const [blogs, setBlogs] = useState(mockBlogs);
+  const { data: blogs, isLoading, isError } = useBlogList();
+  const deleteBlogMutation = useDeleteBlog();
   const { toast } = useToast();
 
   const handleEdit = (id: string) => {
@@ -32,13 +27,31 @@ const AdminBlogTab = () => {
   };
 
   const handleDelete = (id: string) => {
-    // Placeholder for delete functionality
-    setBlogs(blogs.filter(blog => blog.id !== id));
-    toast({
-      title: "Blog deleted",
-      description: "The blog has been successfully deleted.",
+    deleteBlogMutation.mutate(id, {
+      onSuccess: () => {
+        toast({
+          title: "Blog deleted",
+          description: "The blog has been successfully deleted.",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: "Failed to delete the blog. Please try again.",
+          variant: "destructive",
+        });
+        console.error("Delete error:", error);
+      }
     });
   };
+
+  if (isLoading) {
+    return <div>Loading blogs...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading blogs. Please try again.</div>;
+  }
 
   return (
     <div>
@@ -50,39 +63,50 @@ const AdminBlogTab = () => {
         </Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Published Date</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {blogs.map((blog) => (
-            <TableRow key={blog.id}>
-              <TableCell className="font-medium">{blog.title}</TableCell>
-              <TableCell>{blog.publishedDate}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  blog.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {blog.status}
-                </span>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="sm" onClick={() => handleEdit(blog.id)}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleDelete(blog.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </TableCell>
+      {blogs && blogs.length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Published Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {blogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell className="font-medium">{blog.title}</TableCell>
+                <TableCell>{blog.publishedDate}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 rounded-full text-xs ${
+                    blog.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {blog.status}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="sm" onClick={() => handleEdit(blog.id)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleDelete(blog.id)}
+                    disabled={deleteBlogMutation.isPending}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No blogs found. Create your first blog post!</p>
+        </div>
+      )}
     </div>
   );
 };
