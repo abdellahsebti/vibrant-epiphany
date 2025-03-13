@@ -1,60 +1,22 @@
 
-// THIS IS A PLACEHOLDER FILE FOR MONGODB INTEGRATION
-
-// MONGODB INTEGRATION POINT:
-// 1. Install MongoDB packages:
-// - mongodb
-// - mongoose (optional, for schema validation)
-
-// 2. Create MongoDB connection:
-/*
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI; // Set your MongoDB connection string in environment variables
+// MongoDB connection string
+const uri = "mongodb+srv://abdellahsebti001:fUBFdssrTuDkLTz7@epiphinydatabase.fpbwx.mongodb.net/?retryWrites=true&w=majority&appName=epiphinydatabase";
 const client = new MongoClient(uri);
 
 export const connectToDatabase = async () => {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-    return client.db('epiphany-scientific-club'); // Replace with your database name
+    return client.db('epiphany-scientific-club'); // Replace with your database name if different
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
     throw error;
   }
 };
 
-// To use in your API functions:
-// const db = await connectToDatabase();
-// const blogsCollection = db.collection('blogs');
-// const result = await blogsCollection.find({}).toArray();
-*/
-
-// 3. Create MongoDB schemas (if using mongoose):
-/*
-import mongoose from 'mongoose';
-
-const blogSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  publishedDate: { type: String, required: true },
-  status: { type: String, enum: ['Published', 'Draft'], required: true },
-  author: { type: String },
-  imageUrl: { type: String }
-}, { timestamps: true });
-
-export const Blog = mongoose.model('Blog', blogSchema);
-
-// Similar schemas for News and Events
-*/
-
-// IMPORTANT NOTES:
-// - Replace all in-memory arrays in api.ts with MongoDB collections
-// - Replace all CRUD operations with MongoDB queries
-// - Add proper error handling for database operations
-// - Consider implementing pagination for large collections
-// - Add index for frequently queried fields
-
+// MongoDB schemas info for reference
 export const mongodbInfo = {
   collections: [
     {

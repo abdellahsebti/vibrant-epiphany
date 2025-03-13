@@ -6,6 +6,8 @@ export const useNewsList = () => {
   return useQuery({
     queryKey: ['news'],
     queryFn: getNews,
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -14,6 +16,8 @@ export const useNewsDetail = (id: string) => {
     queryKey: ['news', id],
     queryFn: () => getNewsById(id),
     enabled: !!id,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 

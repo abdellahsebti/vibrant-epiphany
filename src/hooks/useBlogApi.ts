@@ -6,6 +6,8 @@ export const useBlogList = () => {
   return useQuery({
     queryKey: ['blogs'],
     queryFn: getBlogs,
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -14,6 +16,8 @@ export const useBlogDetail = (id: string) => {
     queryKey: ['blog', id],
     queryFn: () => getBlogById(id),
     enabled: !!id,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 
