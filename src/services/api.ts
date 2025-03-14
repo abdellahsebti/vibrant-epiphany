@@ -135,7 +135,7 @@ export interface News {
   content: string;
   excerpt: string;
   publishedDate: string;
-  image?: string;
+  image: string;  // Changed from optional to required
   category: string;
   author: string;
 }
@@ -146,10 +146,10 @@ export interface Blog {
   content: string;
   excerpt: string;
   publishedDate: string;
-  image?: string;
+  image: string;  // Changed from optional to required
   author: {
     name: string;
-    avatar?: string;
+    avatar: string;  // Changed from optional to required
   };
   status: string;
   tags: string[];
@@ -165,8 +165,8 @@ export interface Event {
   time: string;
   location: string;
   attendeeCount: number;
-  maxAttendees?: number;
-  image?: string;
+  maxAttendees: number;  // Changed from optional to required
+  image: string;  // Changed from optional to required
   category: string;
   status: string;
 }
