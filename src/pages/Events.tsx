@@ -21,7 +21,7 @@ const Events = () => {
   });
 
   return (
-    <div className="min-h-screen bg-light">
+    <div className="min-h-screen bg-dark">
       <Helmet>
         <title>Events | Epiphany Scientific Club</title>
         <meta name="description" content="Upcoming events, workshops, and lectures hosted by Epiphany Scientific Club." />

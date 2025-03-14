@@ -47,7 +47,7 @@
   }
 
   body {
-    @apply bg-light text-dark font-montserrat antialiased;
+    @apply bg-dark text-light font-montserrat antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {

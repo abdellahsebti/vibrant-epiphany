@@ -21,7 +21,7 @@ const News = () => {
   });
 
   return (
-    <div className="min-h-screen bg-light">
+    <div className="min-h-screen bg-dark">
       <Helmet>
         <title>News | Epiphany Scientific Club</title>
         <meta name="description" content="Latest news and announcements from Epiphany Scientific Club." />

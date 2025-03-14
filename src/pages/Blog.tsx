@@ -21,7 +21,7 @@ const Blog = () => {
   });
 
   return (
-    <div className="min-h-screen bg-light">
+    <div className="min-h-screen bg-dark">
       <Helmet>
         <title>Blog | Epiphany Scientific Club</title>
         <meta name="description" content="Read the latest scientific insights and discoveries from our club members." />
