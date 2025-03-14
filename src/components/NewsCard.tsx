@@ -54,13 +54,13 @@ const NewsCard: React.FC<NewsCardProps> = ({
           alt={title}
           className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute top-4 left-4 bg-primary/90 px-3 py-1 rounded-full text-xs font-medium">
+        <div className="absolute top-4 left-4 bg-primary/90 px-3 py-1 rounded-full text-xs font-medium text-dark">
           {category}
         </div>
       </div>
       
       <div className="p-6">
-        <div className="flex items-center text-dark/60 text-sm mb-2">
+        <div className="flex items-center text-light/60 text-sm mb-2">
           <Calendar size={14} className="mr-1" />
           <span>{date}</span>
         </div>
@@ -69,7 +69,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           <Link to={`/news/${id}`}>{title}</Link>
         </h3>
         
-        <p className="text-dark/80 line-clamp-3 mb-4">
+        <p className="text-light/70 line-clamp-3 mb-4">
           {excerpt}
         </p>
         

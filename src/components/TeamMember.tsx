@@ -72,7 +72,7 @@ const TeamMember: React.FC<TeamMemberProps> = ({
           className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
         />
         
-        <div className="absolute inset-0 bg-gradient-to-t from-dark/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+        <div className="absolute inset-0 bg-gradient-to-t from-dark/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
           <div className="p-6 w-full">
             <div className="flex justify-center space-x-3 mb-4">
               {socialLinks.map((link, i) => (
@@ -81,7 +81,7 @@ const TeamMember: React.FC<TeamMemberProps> = ({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-light/90 flex items-center justify-center text-dark hover:bg-primary transition-colors duration-300"
+                  className="w-8 h-8 rounded-full bg-primary/90 flex items-center justify-center text-dark hover:bg-primary transition-colors duration-300"
                   aria-label={`${link.type} link for ${name}`}
                 >
                   {getSocialIcon(link.type)}
@@ -98,7 +98,7 @@ const TeamMember: React.FC<TeamMemberProps> = ({
       
       <div className="p-5 text-center">
         <h3 className="font-bold text-lg">{name}</h3>
-        <p className="text-dark/70 text-sm">{role}</p>
+        <p className="text-light/70 text-sm">{role}</p>
       </div>
     </div>
   );
