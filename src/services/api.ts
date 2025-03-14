@@ -1,27 +1,160 @@
 
-// This file simulates Next.js server-side functions
-// In a real Next.js app, these would be API routes or server components
-import { ObjectId } from 'mongodb';
-import { connectToDatabase } from './db';
+// Mock data for news articles
+const mockNews = [
+  {
+    id: '1',
+    title: 'New Website Launch',
+    content: 'Our organization has launched a brand new website with enhanced features and improved user experience.',
+    excerpt: 'Our organization has launched a brand new website with enhanced features and improved user experience.',
+    publishedDate: '2023-04-15',
+    image: '/placeholder.svg',
+    category: 'Announcement',
+    author: 'Admin Team'
+  },
+  {
+    id: '2',
+    title: 'Community Outreach Program Expansion',
+    content: 'We are expanding our community outreach programs to include more educational workshops and resources.',
+    excerpt: 'We are expanding our community outreach programs to include more educational workshops and resources.',
+    publishedDate: '2023-04-10',
+    image: '/placeholder.svg',
+    category: 'Community',
+    author: 'Outreach Team'
+  },
+  {
+    id: '3',
+    title: 'Annual Fundraising Event',
+    content: 'Join us for our annual fundraising gala to support ongoing initiatives and future projects.',
+    excerpt: 'Join us for our annual fundraising gala to support ongoing initiatives and future projects.',
+    publishedDate: '2023-04-05',
+    image: '/placeholder.svg',
+    category: 'Events',
+    author: 'Events Team'
+  }
+];
 
-// Types for our data models
-export interface Blog {
-  id: string;
-  title: string;
-  content: string;
-  publishedDate: string;
-  status: 'Published' | 'Draft';
-  author?: string;
-  imageUrl?: string;
-}
+// Mock data for blog posts
+const mockBlogs = [
+  {
+    id: '1',
+    title: 'The Importance of Community Engagement',
+    content: 'Engaging with your community is crucial for building strong relationships and creating positive change.',
+    excerpt: 'Engaging with your community is crucial for building strong relationships and creating positive change.',
+    publishedDate: '2023-04-18',
+    image: '/placeholder.svg',
+    author: {
+      name: 'Jane Smith',
+      avatar: ''
+    },
+    status: 'Published',
+    tags: ['Community', 'Engagement'],
+    readTime: '5 min',
+    commentCount: 12
+  },
+  {
+    id: '2',
+    title: 'Fundraising Strategies for Nonprofits',
+    content: 'Effective fundraising strategies that can help nonprofits maximize their impact and reach their goals.',
+    excerpt: 'Effective fundraising strategies that can help nonprofits maximize their impact and reach their goals.',
+    publishedDate: '2023-04-14',
+    image: '/placeholder.svg',
+    author: {
+      name: 'John Doe',
+      avatar: ''
+    },
+    status: 'Published',
+    tags: ['Fundraising', 'Nonprofit'],
+    readTime: '7 min',
+    commentCount: 8
+  },
+  {
+    id: '3',
+    title: 'Digital Transformation in the Nonprofit Sector',
+    content: 'How digital tools and technologies are transforming the way nonprofits operate and engage with their audience.',
+    excerpt: 'How digital tools and technologies are transforming the way nonprofits operate and engage with their audience.',
+    publishedDate: '2023-04-09',
+    image: '/placeholder.svg',
+    author: {
+      name: 'Sarah Johnson',
+      avatar: ''
+    },
+    status: 'Draft',
+    tags: ['Digital', 'Technology'],
+    readTime: '10 min',
+    commentCount: 0
+  }
+];
 
+// Mock data for events
+const mockEvents = [
+  {
+    id: '1',
+    title: 'Community Workshop Series',
+    description: 'A series of workshops focused on community building and engagement strategies.',
+    date: '2023-05-15',
+    time: '10:00 AM - 2:00 PM',
+    location: 'Community Center, 123 Main St',
+    attendeeCount: 45,
+    maxAttendees: 60,
+    image: '/placeholder.svg',
+    category: 'Workshop',
+    status: 'Upcoming'
+  },
+  {
+    id: '2',
+    title: 'Annual Gala Dinner',
+    description: 'Join us for an evening of celebration and fundraising to support our mission.',
+    date: '2023-06-30',
+    time: '6:00 PM - 10:00 PM',
+    location: 'Grand Hotel Ballroom, 500 Park Ave',
+    attendeeCount: 120,
+    maxAttendees: 200,
+    image: '/placeholder.svg',
+    category: 'Fundraiser',
+    status: 'Upcoming'
+  },
+  {
+    id: '3',
+    title: 'Youth Leadership Conference',
+    description: 'Empowering young leaders with the skills and knowledge to make a difference in their communities.',
+    date: '2023-05-22',
+    time: '9:00 AM - 5:00 PM',
+    location: 'Youth Center, 789 Elm St',
+    attendeeCount: 75,
+    maxAttendees: 100,
+    image: '/placeholder.svg',
+    category: 'Conference',
+    status: 'Upcoming'
+  }
+];
+
+// Type definitions
 export interface News {
   id: string;
   title: string;
   content: string;
+  excerpt: string;
   publishedDate: string;
+  image?: string;
   category: string;
-  imageUrl?: string;
+  author: string;
+}
+
+export interface Blog {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  publishedDate: string;
+  image?: string;
+  author: {
+    name: string;
+    avatar?: string;
+  };
+  status: string;
+  tags: string[];
+  readTime: string;
+  commentCount: number;
 }
 
 export interface Event {
@@ -29,407 +162,158 @@ export interface Event {
   title: string;
   description: string;
   date: string;
+  time: string;
   location: string;
-  status: 'Upcoming' | 'Past';
-  registrationUrl?: string;
-  imageUrl?: string;
+  attendeeCount: number;
+  maxAttendees?: number;
+  image?: string;
+  category: string;
+  status: string;
 }
 
-// Blog API
-export const getBlogs = async (): Promise<Blog[]> => {
-  try {
-    const db = await connectToDatabase();
-    const blogsCollection = db.collection('blogs');
-    const blogs = await blogsCollection.find({}).toArray();
-    
-    // Convert MongoDB _id to id
-    return blogs.map(blog => ({
-      id: blog._id.toString(),
-      title: blog.title,
-      content: blog.content,
-      publishedDate: blog.publishedDate,
-      status: blog.status,
-      author: blog.author,
-      imageUrl: blog.imageUrl
-    }));
-  } catch (error) {
-    console.error("Error fetching blogs:", error);
-    throw error;
-  }
-};
-
-export const getBlogById = async (id: string): Promise<Blog | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const blogsCollection = db.collection('blogs');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    const blog = await blogsCollection.findOne({ _id: objectId });
-    
-    if (!blog) return undefined;
-    
-    return {
-      id: blog._id.toString(),
-      title: blog.title,
-      content: blog.content,
-      publishedDate: blog.publishedDate,
-      status: blog.status,
-      author: blog.author,
-      imageUrl: blog.imageUrl
-    };
-  } catch (error) {
-    console.error("Error fetching blog by id:", error);
-    throw error;
-  }
-};
-
-export const createBlog = async (blog: Omit<Blog, 'id'>): Promise<Blog> => {
-  try {
-    const db = await connectToDatabase();
-    const blogsCollection = db.collection('blogs');
-    
-    const result = await blogsCollection.insertOne(blog);
-    
-    return {
-      id: result.insertedId.toString(),
-      ...blog
-    };
-  } catch (error) {
-    console.error("Error creating blog:", error);
-    throw error;
-  }
-};
-
-export const updateBlog = async (id: string, blog: Partial<Blog>): Promise<Blog | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const blogsCollection = db.collection('blogs');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    // Remove id from update object if present
-    const { id: _, ...updateData } = blog;
-    
-    await blogsCollection.updateOne(
-      { _id: objectId },
-      { $set: updateData }
-    );
-    
-    const updatedBlog = await blogsCollection.findOne({ _id: objectId });
-    
-    if (!updatedBlog) return undefined;
-    
-    return {
-      id: updatedBlog._id.toString(),
-      title: updatedBlog.title,
-      content: updatedBlog.content,
-      publishedDate: updatedBlog.publishedDate,
-      status: updatedBlog.status,
-      author: updatedBlog.author,
-      imageUrl: updatedBlog.imageUrl
-    };
-  } catch (error) {
-    console.error("Error updating blog:", error);
-    throw error;
-  }
-};
-
-export const deleteBlog = async (id: string): Promise<boolean> => {
-  try {
-    const db = await connectToDatabase();
-    const blogsCollection = db.collection('blogs');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return false;
-    }
-    
-    const result = await blogsCollection.deleteOne({ _id: objectId });
-    return result.deletedCount > 0;
-  } catch (error) {
-    console.error("Error deleting blog:", error);
-    throw error;
-  }
-};
-
-// News API
+// News API functions
 export const getNews = async (): Promise<News[]> => {
-  try {
-    const db = await connectToDatabase();
-    const newsCollection = db.collection('news');
-    const newsItems = await newsCollection.find({}).toArray();
-    
-    // Convert MongoDB _id to id
-    return newsItems.map(news => ({
-      id: news._id.toString(),
-      title: news.title,
-      content: news.content,
-      publishedDate: news.publishedDate,
-      category: news.category,
-      imageUrl: news.imageUrl
-    }));
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    throw error;
-  }
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockNews;
 };
 
-export const getNewsById = async (id: string): Promise<News | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const newsCollection = db.collection('news');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    const news = await newsCollection.findOne({ _id: objectId });
-    
-    if (!news) return undefined;
-    
-    return {
-      id: news._id.toString(),
-      title: news.title,
-      content: news.content,
-      publishedDate: news.publishedDate,
-      category: news.category,
-      imageUrl: news.imageUrl
-    };
-  } catch (error) {
-    console.error("Error fetching news by id:", error);
-    throw error;
+export const getNewsById = async (id: string): Promise<News> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const news = mockNews.find(item => item.id === id);
+  if (!news) {
+    throw new Error('News article not found');
   }
+  return news;
 };
 
 export const createNews = async (newsItem: Omit<News, 'id'>): Promise<News> => {
-  try {
-    const db = await connectToDatabase();
-    const newsCollection = db.collection('news');
-    
-    const result = await newsCollection.insertOne(newsItem);
-    
-    return {
-      id: result.insertedId.toString(),
-      ...newsItem
-    };
-  } catch (error) {
-    console.error("Error creating news:", error);
-    throw error;
-  }
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const newNews = {
+    ...newsItem,
+    id: Math.random().toString(36).substring(2, 9)
+  };
+  mockNews.push(newNews);
+  return newNews;
 };
 
-export const updateNews = async (id: string, newsItem: Partial<News>): Promise<News | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const newsCollection = db.collection('news');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    // Remove id from update object if present
-    const { id: _, ...updateData } = newsItem;
-    
-    await newsCollection.updateOne(
-      { _id: objectId },
-      { $set: updateData }
-    );
-    
-    const updatedNews = await newsCollection.findOne({ _id: objectId });
-    
-    if (!updatedNews) return undefined;
-    
-    return {
-      id: updatedNews._id.toString(),
-      title: updatedNews.title,
-      content: updatedNews.content,
-      publishedDate: updatedNews.publishedDate,
-      category: updatedNews.category,
-      imageUrl: updatedNews.imageUrl
-    };
-  } catch (error) {
-    console.error("Error updating news:", error);
-    throw error;
+export const updateNews = async (id: string, news: Partial<News>): Promise<News> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockNews.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('News article not found');
   }
+  mockNews[index] = { ...mockNews[index], ...news };
+  return mockNews[index];
 };
 
-export const deleteNews = async (id: string): Promise<boolean> => {
-  try {
-    const db = await connectToDatabase();
-    const newsCollection = db.collection('news');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return false;
-    }
-    
-    const result = await newsCollection.deleteOne({ _id: objectId });
-    return result.deletedCount > 0;
-  } catch (error) {
-    console.error("Error deleting news:", error);
-    throw error;
+export const deleteNews = async (id: string): Promise<void> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockNews.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('News article not found');
   }
+  mockNews.splice(index, 1);
 };
 
-// Events API
+// Blog API functions
+export const getBlogs = async (): Promise<Blog[]> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockBlogs;
+};
+
+export const getBlogById = async (id: string): Promise<Blog> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const blog = mockBlogs.find(item => item.id === id);
+  if (!blog) {
+    throw new Error('Blog post not found');
+  }
+  return blog;
+};
+
+export const createBlog = async (blogItem: Omit<Blog, 'id'>): Promise<Blog> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const newBlog = {
+    ...blogItem,
+    id: Math.random().toString(36).substring(2, 9)
+  };
+  mockBlogs.push(newBlog);
+  return newBlog;
+};
+
+export const updateBlog = async (id: string, blog: Partial<Blog>): Promise<Blog> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockBlogs.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('Blog post not found');
+  }
+  mockBlogs[index] = { ...mockBlogs[index], ...blog };
+  return mockBlogs[index];
+};
+
+export const deleteBlog = async (id: string): Promise<void> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockBlogs.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('Blog post not found');
+  }
+  mockBlogs.splice(index, 1);
+};
+
+// Event API functions
 export const getEvents = async (): Promise<Event[]> => {
-  try {
-    const db = await connectToDatabase();
-    const eventsCollection = db.collection('events');
-    const events = await eventsCollection.find({}).toArray();
-    
-    // Convert MongoDB _id to id
-    return events.map(event => ({
-      id: event._id.toString(),
-      title: event.title,
-      description: event.description,
-      date: event.date,
-      location: event.location,
-      status: event.status,
-      registrationUrl: event.registrationUrl,
-      imageUrl: event.imageUrl
-    }));
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    throw error;
-  }
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockEvents;
 };
 
-export const getEventById = async (id: string): Promise<Event | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const eventsCollection = db.collection('events');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    const event = await eventsCollection.findOne({ _id: objectId });
-    
-    if (!event) return undefined;
-    
-    return {
-      id: event._id.toString(),
-      title: event.title,
-      description: event.description,
-      date: event.date,
-      location: event.location,
-      status: event.status,
-      registrationUrl: event.registrationUrl,
-      imageUrl: event.imageUrl
-    };
-  } catch (error) {
-    console.error("Error fetching event by id:", error);
-    throw error;
+export const getEventById = async (id: string): Promise<Event> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const event = mockEvents.find(item => item.id === id);
+  if (!event) {
+    throw new Error('Event not found');
   }
+  return event;
 };
 
-export const createEvent = async (event: Omit<Event, 'id'>): Promise<Event> => {
-  try {
-    const db = await connectToDatabase();
-    const eventsCollection = db.collection('events');
-    
-    const result = await eventsCollection.insertOne(event);
-    
-    return {
-      id: result.insertedId.toString(),
-      ...event
-    };
-  } catch (error) {
-    console.error("Error creating event:", error);
-    throw error;
-  }
+export const createEvent = async (eventItem: Omit<Event, 'id'>): Promise<Event> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const newEvent = {
+    ...eventItem,
+    id: Math.random().toString(36).substring(2, 9)
+  };
+  mockEvents.push(newEvent);
+  return newEvent;
 };
 
-export const updateEvent = async (id: string, event: Partial<Event>): Promise<Event | undefined> => {
-  try {
-    const db = await connectToDatabase();
-    const eventsCollection = db.collection('events');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return undefined;
-    }
-    
-    // Remove id from update object if present
-    const { id: _, ...updateData } = event;
-    
-    await eventsCollection.updateOne(
-      { _id: objectId },
-      { $set: updateData }
-    );
-    
-    const updatedEvent = await eventsCollection.findOne({ _id: objectId });
-    
-    if (!updatedEvent) return undefined;
-    
-    return {
-      id: updatedEvent._id.toString(),
-      title: updatedEvent.title,
-      description: updatedEvent.description,
-      date: updatedEvent.date,
-      location: updatedEvent.location,
-      status: updatedEvent.status,
-      registrationUrl: updatedEvent.registrationUrl,
-      imageUrl: updatedEvent.imageUrl
-    };
-  } catch (error) {
-    console.error("Error updating event:", error);
-    throw error;
+export const updateEvent = async (id: string, event: Partial<Event>): Promise<Event> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockEvents.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('Event not found');
   }
+  mockEvents[index] = { ...mockEvents[index], ...event };
+  return mockEvents[index];
 };
 
-export const deleteEvent = async (id: string): Promise<boolean> => {
-  try {
-    const db = await connectToDatabase();
-    const eventsCollection = db.collection('events');
-    
-    let objectId;
-    try {
-      objectId = new ObjectId(id);
-    } catch (error) {
-      console.error("Invalid ObjectId format:", error);
-      return false;
-    }
-    
-    const result = await eventsCollection.deleteOne({ _id: objectId });
-    return result.deletedCount > 0;
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    throw error;
+export const deleteEvent = async (id: string): Promise<void> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const index = mockEvents.findIndex(item => item.id === id);
+  if (index === -1) {
+    throw new Error('Event not found');
   }
+  mockEvents.splice(index, 1);
 };
