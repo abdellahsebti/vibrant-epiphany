@@ -10,9 +10,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Link to="/" className="flex items-center space-x-2 mb-6">
-              <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-                <span className="font-bold text-dark text-lg">E</span>
-              </div>
+              <img 
+                src="/lovable-uploads/7fa7b3fe-705a-4c6e-8f71-59878a0ae8b8.png" 
+                alt="Epiphany Logo" 
+                className="h-10 w-auto"
+              />
               <span className="font-bold text-xl text-light">Epiphany</span>
             </Link>
             
