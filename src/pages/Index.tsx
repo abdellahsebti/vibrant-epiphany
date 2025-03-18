@@ -97,7 +97,9 @@ const Index = () => {
   const sectionRefs = {
     news: useRef<HTMLDivElement>(null),
     blog: useRef<HTMLDivElement>(null),
-    events: useRef<HTMLDivElement>(null)
+    events: useRef<HTMLDivElement>(null),
+    mission: useRef<HTMLDivElement>(null),
+    magazine: useRef<HTMLDivElement>(null),
   };
   
   useEffect(() => {
@@ -124,8 +126,27 @@ const Index = () => {
     <div className="min-h-screen">
       <Hero />
       
+      {/* Mission Section */}
+      <section ref={sectionRefs.mission} className="section-padding bg-neutral/30">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto">
+            <div className="section-heading opacity-0 translate-y-10 transition-all duration-700 text-center">
+              <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
+            </div>
+            <div className="glass-panel p-8 rounded-xl">
+              <p className="text-dark/80 text-lg mb-6">
+                At Epiphany, we bring your ideas to life by serving as a hub for innovation and creativity. Our mission is to bridge the gap between engineering and entrepreneurship, providing our members with the resources they need to launch their ventures. Through lectures, workshops, activities, and events, we equip aspiring entrepreneurs with the knowledge and support to kickstart their journey.
+              </p>
+              <p className="text-dark/80 text-lg">
+                We collaborate closely with the school's incubator and FabLab, guiding startups through a structured four-stage program. Additionally, we showcase their progress and achievements through events, social media, and other platforms, ensuring their innovations gain the visibility they deserve.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Latest News Section */}
-      <section ref={sectionRefs.news} className="section-padding bg-neutral/30">
+      <section ref={sectionRefs.news} className="section-padding">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
@@ -158,13 +179,36 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Magazine Section */}
+      <section ref={sectionRefs.magazine} className="section-padding bg-neutral/30">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
+              <h2 className="text-3xl font-bold mb-6">Discover Our Magazine</h2>
+            </div>
+            <p className="text-dark/80 text-lg mb-8">
+              Explore our magazine now to discover the latest breakthroughs in nanotechnology research, stay updated on school news, and delve into the business side of nanotechnology—including startups, partnerships, and global investments.
+            </p>
+            <div className="glass-panel p-6 rounded-xl inline-block">
+              <h3 className="text-xl font-semibold mb-2">What We Offer</h3>
+              <p className="text-dark/80 mb-6">Research Magazine: Publish your findings and insights in our monthly publication.</p>
+              <Link to="/magazine" className="btn-primary">
+                Explore Magazine
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Blog Preview Section */}
       <section ref={sectionRefs.blog} className="section-padding">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
-              <h2 className="text-3xl font-bold mb-2">Featured Articles</h2>
-              <p className="text-dark/70">Insights and perspectives from our members</p>
+              <h2 className="text-3xl font-bold mb-2">Welcome to Our Blog</h2>
+              <p className="text-dark/70">
+                Our blog empowers students by providing a platform to share their stories and experiences, giving them a voice and agency. It fosters a space for expression, connection, and learning, allowing others to discover relatable insights and valuable lessons.
+              </p>
             </div>
             <Link 
               to="/blog" 
@@ -244,7 +288,7 @@ const Index = () => {
               Ready to join the Epiphany community?
             </h2>
             <p className="text-light/70 mb-8 text-lg">
-              Connect with like-minded scientists, participate in groundbreaking research, and be part of a community that's shaping the future.
+              We are a scientific club at the National Higher School of Nanoscience and Nanotechnology, dedicated to entrepreneurship and innovation. Our mission is to empower engineers by providing the resources, support, and guidance they need to embark on their entrepreneurial journey.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to="/signup" className="btn-primary">
