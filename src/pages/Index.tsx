@@ -134,10 +134,10 @@ const Index = () => {
               <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
             </div>
             <div className="glass-panel p-8 rounded-xl">
-              <p className="text-dark/80 text-lg mb-6">
+              <p className="text-light text-lg mb-6">
                 At Epiphany, we bring your ideas to life by serving as a hub for innovation and creativity. Our mission is to bridge the gap between engineering and entrepreneurship, providing our members with the resources they need to launch their ventures. Through lectures, workshops, activities, and events, we equip aspiring entrepreneurs with the knowledge and support to kickstart their journey.
               </p>
-              <p className="text-dark/80 text-lg">
+              <p className="text-light text-lg">
                 We collaborate closely with the school's incubator and FabLab, guiding startups through a structured four-stage program. Additionally, we showcase their progress and achievements through events, social media, and other platforms, ensuring their innovations gain the visibility they deserve.
               </p>
             </div>
@@ -151,7 +151,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
               <h2 className="text-3xl font-bold mb-2">Latest News</h2>
-              <p className="text-dark/70">Stay updated with the latest happenings at Epiphany</p>
+              <p className="text-light/70">Stay updated with the latest happenings at Epiphany</p>
             </div>
             <Link 
               to="/news" 
@@ -186,12 +186,12 @@ const Index = () => {
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
               <h2 className="text-3xl font-bold mb-6">Discover Our Magazine</h2>
             </div>
-            <p className="text-dark/80 text-lg mb-8">
+            <p className="text-light text-lg mb-8">
               Explore our magazine now to discover the latest breakthroughs in nanotechnology research, stay updated on school news, and delve into the business side of nanotechnology—including startups, partnerships, and global investments.
             </p>
             <div className="glass-panel p-6 rounded-xl inline-block">
               <h3 className="text-xl font-semibold mb-2">What We Offer</h3>
-              <p className="text-dark/80 mb-6">Research Magazine: Publish your findings and insights in our monthly publication.</p>
+              <p className="text-light mb-6">Research Magazine: Publish your findings and insights in our monthly publication.</p>
               <Link to="/magazine" className="btn-primary">
                 Explore Magazine
               </Link>
@@ -206,7 +206,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
               <h2 className="text-3xl font-bold mb-2">Welcome to Our Blog</h2>
-              <p className="text-dark/70">
+              <p className="text-light/70">
                 Our blog empowers students by providing a platform to share their stories and experiences, giving them a voice and agency. It fosters a space for expression, connection, and learning, allowing others to discover relatable insights and valuable lessons.
               </p>
             </div>
@@ -245,7 +245,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div className="section-heading opacity-0 translate-y-10 transition-all duration-700">
               <h2 className="text-3xl font-bold mb-2">Upcoming Events</h2>
-              <p className="text-dark/70">Join us for exciting events and learning opportunities</p>
+              <p className="text-light/70">Join us for exciting events and learning opportunities</p>
             </div>
             <Link 
               to="/events" 
