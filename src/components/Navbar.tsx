@@ -54,7 +54,7 @@ const Navbar = () => {
           <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
             <span className="font-bold text-dark text-lg">E</span>
           </div>
-          <span className={`font-bold text-xl ${scrolled ? 'text-dark' : 'text-dark'}`}>Epiphany</span>
+          <span className="font-bold text-xl text-light">Epiphany</span>
         </Link>
 
         {/* Desktop Menu */}
@@ -66,7 +66,7 @@ const Navbar = () => {
               className={`font-medium transition-all duration-300 hover:text-primary relative ${
                 isActive(link.path) 
                   ? 'text-primary after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-primary' 
-                  : scrolled ? 'text-dark' : 'text-dark'
+                  : 'text-light'
               }`}
             >
               {link.name}
@@ -75,7 +75,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex space-x-4">
-          <Link to="/login" className="btn-outline text-sm">
+          <Link to="/login" className="btn-outline text-sm text-light border-light hover:text-dark">
             Log in
           </Link>
           <Link to="/signup" className="btn-primary text-sm">
@@ -85,7 +85,7 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <button 
-          className="md:hidden text-dark"
+          className="md:hidden text-light"
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
@@ -95,7 +95,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div 
-        className={`absolute top-full left-0 w-full bg-light shadow-lg md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`absolute top-full left-0 w-full bg-dark shadow-lg md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
           isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
@@ -105,14 +105,14 @@ const Navbar = () => {
               key={link.path}
               to={link.path}
               className={`py-2 px-4 rounded-lg font-medium ${
-                isActive(link.path) ? 'bg-neutral text-primary' : 'text-dark hover:bg-neutral'
+                isActive(link.path) ? 'bg-neutral text-primary' : 'text-light hover:bg-neutral'
               }`}
             >
               {link.name}
             </Link>
           ))}
           <div className="flex flex-col space-y-2 pt-4 border-t border-neutral">
-            <Link to="/login" className="btn-outline text-center">
+            <Link to="/login" className="btn-outline text-center text-light border-light hover:text-dark">
               Log in
             </Link>
             <Link to="/signup" className="btn-primary text-center">
