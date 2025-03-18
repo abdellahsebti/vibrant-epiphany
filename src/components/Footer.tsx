@@ -10,13 +10,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Link to="/" className="flex items-center space-x-2 mb-6">
-              <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-                <span className="font-bold text-dark text-lg">E</span>
-              </div>
+              <img 
+                src="/lovable-uploads/7fa7b3fe-705a-4c6e-8f71-59878a0ae8b8.png" 
+                alt="Epiphany Logo" 
+                className="h-10 w-auto"
+              />
               <span className="font-bold text-xl text-light">Epiphany</span>
             </Link>
             
-            <p className="text-light/70 mb-6">
+            <p className="text-light/80 mb-6">
               Discovering the wonders of science and fostering a community of curious minds since 2023.
             </p>
             
@@ -53,34 +55,34 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-6">Quick Links</h3>
+            <h3 className="font-bold text-lg mb-6 text-light">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-light/70 hover:text-primary transition-colors duration-300 flex items-center">
+                <Link to="/" className="text-light/80 hover:text-primary transition-colors duration-300 flex items-center">
                   <ArrowRight size={14} className="mr-2" />
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/news" className="text-light/70 hover:text-primary transition-colors duration-300 flex items-center">
+                <Link to="/news" className="text-light/80 hover:text-primary transition-colors duration-300 flex items-center">
                   <ArrowRight size={14} className="mr-2" />
                   News
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-light/70 hover:text-primary transition-colors duration-300 flex items-center">
+                <Link to="/blog" className="text-light/80 hover:text-primary transition-colors duration-300 flex items-center">
                   <ArrowRight size={14} className="mr-2" />
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/events" className="text-light/70 hover:text-primary transition-colors duration-300 flex items-center">
+                <Link to="/events" className="text-light/80 hover:text-primary transition-colors duration-300 flex items-center">
                   <ArrowRight size={14} className="mr-2" />
                   Events
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-light/70 hover:text-primary transition-colors duration-300 flex items-center">
+                <Link to="/about" className="text-light/80 hover:text-primary transition-colors duration-300 flex items-center">
                   <ArrowRight size={14} className="mr-2" />
                   About Us
                 </Link>
@@ -89,26 +91,26 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-6">Contact Us</h3>
+            <h3 className="font-bold text-lg mb-6 text-light">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex">
                 <MapPin size={20} className="mr-3 text-primary flex-shrink-0" />
-                <span className="text-light/70">123 Science Street, Innovation Valley, CA 94103</span>
+                <span className="text-light/80">123 Science Street, Innovation Valley, CA 94103</span>
               </li>
               <li className="flex">
                 <Phone size={20} className="mr-3 text-primary flex-shrink-0" />
-                <span className="text-light/70">+1 (555) 123-4567</span>
+                <span className="text-light/80">+1 (555) 123-4567</span>
               </li>
               <li className="flex">
                 <Mail size={20} className="mr-3 text-primary flex-shrink-0" />
-                <span className="text-light/70">info@epiphanyclub.org</span>
+                <span className="text-light/80">info@epiphanyclub.org</span>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-6">Newsletter</h3>
-            <p className="text-light/70 mb-4">
+            <h3 className="font-bold text-lg mb-6 text-light">Newsletter</h3>
+            <p className="text-light/80 mb-4">
               Stay updated with our latest news and events. Subscribe to our newsletter.
             </p>
             <form className="space-y-3">
@@ -128,7 +130,7 @@ const Footer = () => {
         </div>
         
         <div className="pt-8 border-t border-light/10 text-center">
-          <p className="text-light/50 text-sm">
+          <p className="text-light/60 text-sm">
             © {new Date().getFullYear()} Epiphany Scientific Club. All rights reserved.
           </p>
         </div>

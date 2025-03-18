@@ -64,7 +64,7 @@ const EventCard: React.FC<EventCardProps> = ({
           alt={title}
           className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute top-4 left-4 bg-primary/90 px-3 py-1 rounded-full text-xs font-medium">
+        <div className="absolute top-4 left-4 bg-primary/90 px-3 py-1 rounded-full text-xs font-medium text-dark">
           {category}
         </div>
       </div>
@@ -74,22 +74,22 @@ const EventCard: React.FC<EventCardProps> = ({
           <Link to={`/events/${id}`}>{title}</Link>
         </h3>
         
-        <p className="text-dark/80 line-clamp-2 mb-4">
+        <p className="text-light/70 line-clamp-2 mb-4">
           {description}
         </p>
         
         <div className="space-y-2 mb-4">
-          <div className="flex items-center text-dark/80 text-sm">
+          <div className="flex items-center text-light/80 text-sm">
             <Calendar size={16} className="mr-2 text-primary" />
             <span>{date}</span>
           </div>
           
-          <div className="flex items-center text-dark/80 text-sm">
+          <div className="flex items-center text-light/80 text-sm">
             <Clock size={16} className="mr-2 text-primary" />
             <span>{time}</span>
           </div>
           
-          <div className="flex items-center text-dark/80 text-sm">
+          <div className="flex items-center text-light/80 text-sm">
             <MapPin size={16} className="mr-2 text-primary" />
             <span>{location}</span>
           </div>
@@ -102,9 +102,9 @@ const EventCard: React.FC<EventCardProps> = ({
                 <Users size={16} className="mr-1" />
                 <span>{attendeeCount} attending</span>
               </span>
-              <span className="text-dark/60">{maxAttendees - attendeeCount} spots left</span>
+              <span className="text-light/60">{maxAttendees - attendeeCount} spots left</span>
             </div>
-            <div className="w-full h-2 bg-neutral rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-dark/40 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-primary rounded-full transition-all duration-500"
                 style={{ width: `${percentFilled}%` }}

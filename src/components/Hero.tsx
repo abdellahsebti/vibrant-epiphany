@@ -30,14 +30,14 @@ const Hero = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
-              <span className="inline-block bg-primary/20 text-dark px-4 py-1 rounded-full text-sm font-medium mb-4">Scientific Club</span>
+              <span className="inline-block bg-primary/20 text-dark px-4 py-1 rounded-full text-sm font-medium mb-4">Innovation & Entrepreneurship</span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
-                Discover the <span className="text-primary">Epiphany</span> behind science
+                Because Every <span className="text-primary">Epiphany</span> Matters
               </h1>
             </div>
             
             <p className="text-lg md:text-xl text-dark/80 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-100">
-              Join our community of scientists, researchers, and enthusiasts exploring the frontiers of knowledge and making discoveries that matter.
+              Epiphany is a club about innovation and entrepreneurship at the national higher school of nanoscience and nanotechnology. Our aim is to transform innovative ideas into functional startups by providing guidance, resources and expertise to our members.
             </p>
             
             <div className="flex flex-wrap gap-4 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-200">

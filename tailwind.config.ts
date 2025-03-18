@@ -28,7 +28,7 @@ export default {
         secondary: "#EFD30B",
         light: "#F9F8F4",
         neutral: "#DFDFD9",
-        dark: "#1A1A19",
+        dark: "#1A1A19", // This remains the same as it was already 1A1A19
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

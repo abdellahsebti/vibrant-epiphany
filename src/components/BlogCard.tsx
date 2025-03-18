@@ -63,10 +63,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
           alt={title}
           className="w-full h-52 object-cover transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent"></div>
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <span key={tag} className="bg-light/90 text-dark px-3 py-1 rounded-full text-xs font-medium">
+            <span key={tag} className="bg-primary/90 text-dark px-3 py-1 rounded-full text-xs font-medium">
               {tag}
             </span>
           ))}
@@ -78,23 +78,23 @@ const BlogCard: React.FC<BlogCardProps> = ({
           <Link to={`/blog/${id}`}>{title}</Link>
         </h3>
         
-        <p className="text-dark/80 line-clamp-2 mb-4">
+        <p className="text-light/70 line-clamp-2 mb-4">
           {excerpt}
         </p>
         
-        <div className="flex items-center justify-between pt-4 border-t border-neutral">
+        <div className="flex items-center justify-between pt-4 border-t border-primary/20">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-neutral mr-2 overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-primary/30 mr-2 overflow-hidden">
               {author.avatar ? (
                 <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
               ) : (
-                <User size={20} className="w-full h-full p-1" />
+                <User size={20} className="w-full h-full p-1 text-primary" />
               )}
             </div>
             <span className="text-sm font-medium">{author.name}</span>
           </div>
           
-          <div className="flex text-dark/60 text-xs">
+          <div className="flex text-light/60 text-xs">
             <span className="flex items-center mr-3">
               <Clock size={12} className="mr-1" />
               {readTime}
