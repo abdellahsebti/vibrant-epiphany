@@ -42,8 +42,8 @@ export interface Event {
   status: string;
 }
 
-// API Base URL - Replace with your Express backend URL when deployed
-const API_BASE_URL = 'http://localhost:3001/api';
+// API Base URL - Updated to the provided backend URL
+const API_BASE_URL = 'https://attendance-ashy-tau.vercel.app/api';
 
 // News API functions
 export const getNews = async (): Promise<News[]> => {
@@ -52,7 +52,9 @@ export const getNews = async (): Promise<News[]> => {
     if (!response.ok) {
       throw new Error('Failed to fetch news');
     }
-    return await response.json();
+    const data = await response.json();
+    // Return the data directly or map it if necessary
+    return data;
   } catch (error) {
     console.error('Error fetching news:', error);
     return [];
@@ -131,7 +133,8 @@ export const getBlogs = async (): Promise<Blog[]> => {
     if (!response.ok) {
       throw new Error('Failed to fetch blogs');
     }
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error fetching blogs:', error);
     return [];
@@ -210,7 +213,8 @@ export const getEvents = async (): Promise<Event[]> => {
     if (!response.ok) {
       throw new Error('Failed to fetch events');
     }
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error fetching events:', error);
     return [];
