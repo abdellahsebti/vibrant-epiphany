@@ -43,7 +43,7 @@ export interface Event {
 }
 
 // API Base URL - Updated to the provided backend URL
-const API_BASE_URL = 'https://attendance-ashy-tau.vercel.app/api';
+export const API_BASE_URL = 'https://attendance-ashy-tau.vercel.app/api';
 
 // News API functions
 export const getNews = async (): Promise<News[]> => {

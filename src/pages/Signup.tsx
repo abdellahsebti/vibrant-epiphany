@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { signup, setAuthToken } from '@/services/authService';
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -18,8 +19,9 @@ const Signup = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate form
@@ -50,17 +52,40 @@ const Signup = () => {
       return;
     }
     
-    // Simulate signup
+    // Attempt to register
     setLoading(true);
     
-    setTimeout(() => {
+    try {
+      const response = await signup({
+        name,
+        email,
+        password
+      });
+      
+      // Store the token
+      setAuthToken(response.token);
+      
       toast({
         title: "Success",
         description: "Your account has been created",
       });
+      
+      // Redirect to home page after successful signup
+      navigate('/');
+    } catch (error) {
+      let message = "Failed to create account";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive"
+      });
+    } finally {
       setLoading(false);
-      // In a real app, you would redirect the user or update auth state here
-    }, 1000);
+    }
   };
 
   return (
@@ -93,6 +118,7 @@ const Signup = () => {
                   className="pl-10"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -110,6 +136,7 @@ const Signup = () => {
                   className="pl-10"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -127,6 +154,7 @@ const Signup = () => {
                   className="pl-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -144,6 +172,7 @@ const Signup = () => {
                   className="pl-10"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -153,6 +182,7 @@ const Signup = () => {
                 id="terms" 
                 checked={acceptTerms} 
                 onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+                disabled={loading}
               />
               <Label htmlFor="terms" className="text-sm text-dark/70">
                 I agree to the{" "}
@@ -182,10 +212,10 @@ const Signup = () => {
             </div>
             
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="border border-dark/20 hover:bg-primary/10">
+              <Button variant="outline" className="border border-dark/20 hover:bg-primary/10" type="button" disabled={loading}>
                 Google
               </Button>
-              <Button variant="outline" className="border border-dark/20 hover:bg-primary/10">
+              <Button variant="outline" className="border border-dark/20 hover:bg-primary/10" type="button" disabled={loading}>
                 GitHub
               </Button>
             </div>
