@@ -20,6 +20,7 @@ app.use(express.json());
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/blogs', require('./routes/blogRoutes'));
 app.use('/api/events', require('./routes/eventRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 
 // Basic route
 app.get('/', (req, res) => {
